@@ -4,10 +4,10 @@
 \alias{get_ccp}
 \title{Identify at most one consistent correlation peak (ccp)}
 \usage{
-get_ccp(ccr.list, Tx = 25)
+get_ccp(ccr_list, Tx = 25)
 }
 \arguments{
-\item{ccr.list}{list, obtained by \code{get_ccr_peaks}}
+\item{ccr_list}{list, obtained by \code{get_ccr_peaks}}
 
 \item{Tx}{integer, the tolerance zone is \verb{+/- Tx}}
 }
@@ -32,13 +32,13 @@ segments <- get_segs(x, len = 50)
 # based on y and segment 7 in 3 different scales;
 # the number of peaks identified in each scale are 5, 3, and 1, respectively.
 seg_scale_max <- 3
-npeaks.set <- c(5,3,1)
+npeaks_set <- c(5,3,1)
 outlength <- c(50, 100, 200)
 
-ccr.list <- lapply(1:seg_scale_max, function(seg_scale) {
+ccr_list <- lapply(1:seg_scale_max, function(seg_scale) {
   get_ccr_peaks(y, segments, seg_outlength = outlength[seg_scale], nseg = 7, 
-  npeaks = npeaks.set[seg_scale])
+  npeaks = npeaks_set[seg_scale])
 })
 
-get_ccp(ccr.list, Tx = 25)
+get_ccp(ccr_list, Tx = 25)
 }

@@ -10,9 +10,9 @@
 #'
 #' @return a list consisting of:
 #' * `ccr`: the cross correlation curve
-#' * `adj.pos`: indices of the curve
-#' * `peaks.pos`: position of the identified peaks
-#' * `peaks.heights`: the cross correlation value (height of the curve) of the peaks
+#' * `adj_pos`: indices of the curve
+#' * `peaks_pos`: position of the identified peaks
+#' * `peaks_heights`: the cross correlation value (height of the curve) of the peaks
 #' @export
 #' 
 #' @importFrom assertthat assert_that
@@ -50,11 +50,11 @@ get_ccr_peaks <- function(comp, segments, seg_outlength, nseg = 1, npeaks = 5){
   # adjust the position
   adj_pos <- ccr$lag - tmp_pos + 1
   
-  peaks.heights <- ccr$ccf[peaks][od]
-  peaks.pos <- adj_pos[peaks][od]
+  peaks_heights <- ccr$ccf[peaks][od]
+  peaks_pos <- adj_pos[peaks][od]
   
-  return(list(ccr = ccr, adj.pos = adj_pos,
-              peaks.pos = peaks.pos, peaks.heights = peaks.heights))
+  return(list(ccr = ccr, adj_pos = adj_pos,
+              peaks_pos = peaks_pos, peaks_heights = peaks_heights))
   
 }
 
@@ -63,7 +63,7 @@ get_ccr_peaks <- function(comp, segments, seg_outlength, nseg = 1, npeaks = 5){
 #' If multi segment lengths strategy is being used, at most one consistent correlation
 #' peak (ccp) will be found for the corresponding basis segment. If the ccp cannot be identified, 
 #' return `NULL`
-#' @param ccr.list list, obtained by `get_ccr_peaks`
+#' @param ccr_list list, obtained by `get_ccr_peaks`
 #' @param Tx integer, the tolerance zone is `+/- Tx`
 #'
 #' @return integer, the position of the ccp if it is identified; `NULL` otherwise. 
@@ -83,32 +83,32 @@ get_ccr_peaks <- function(comp, segments, seg_outlength, nseg = 1, npeaks = 5){
 #' # based on y and segment 7 in 3 different scales;
 #' # the number of peaks identified in each scale are 5, 3, and 1, respectively.
 #' seg_scale_max <- 3
-#' npeaks.set <- c(5,3,1)
+#' npeaks_set <- c(5,3,1)
 #' outlength <- c(50, 100, 200)
 #' 
-#' ccr.list <- lapply(1:seg_scale_max, function(seg_scale) {
+#' ccr_list <- lapply(1:seg_scale_max, function(seg_scale) {
 #'   get_ccr_peaks(y, segments, seg_outlength = outlength[seg_scale], nseg = 7, 
-#'   npeaks = npeaks.set[seg_scale])
+#'   npeaks = npeaks_set[seg_scale])
 #' })
 #' 
-#' get_ccp(ccr.list, Tx = 25)
-get_ccp <- function(ccr.list, Tx = 25){
+#' get_ccp(ccr_list, Tx = 25)
+get_ccp <- function(ccr_list, Tx = 25){
   
   assert_that(is.numeric(Tx))
   
   # the number of different scales we have
-  seg_level <- length(ccr.list)
+  seg_level <- length(ccr_list)
   
   # the highest level has only one position, 
   # set it as a basis
-  basis <- ccr.list[[seg_level]]$peaks.pos
+  basis <- ccr_list[[seg_level]]$peaks_pos
   
   # if the entire basis segment is NA 
-  if(length(basis) == 0 & all(is.na(ccr.list[[seg_level]]$ccr$ccf))) { return(NULL) }
+  if(length(basis) == 0 & all(is.na(ccr_list[[seg_level]]$ccr$ccf))) { return(NULL) }
   
   rr <- lapply(seq_along(basis), function(idx) {
     ccp <- lapply(1:(seg_level), function(level) {
-      ck.tmp <- abs(ccr.list[[level]]$peaks.pos - basis[idx]) <= Tx
+      ck.tmp <- abs(ccr_list[[level]]$peaks_pos - basis[idx]) <= Tx
       if((all(!ck.tmp)) | (all(is.na(ck.tmp)))) { return(NULL) }
       else {
         return(1)

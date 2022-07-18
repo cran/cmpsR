@@ -43,7 +43,7 @@ x <- bullets$sigs[bullets$bulletland == "2-3"][[1]]$sig
 y <- bullets$sigs[bullets$bulletland == "1-2"][[1]]$sig
 
 cmps <- extract_feature_cmps(x, y, include = "full_result")
-cmps$CMPS.score
+cmps$CMPS_score
 
 ## ----plot_example, fig.cap="A KM Comparison, x and y", fig.align='center'-----
 # knitr::include_graphics("man/figures/step0.png")
@@ -94,11 +94,11 @@ df.y %>% filter(!is.na(value)) %>%
 
 ## ----plot_ccf_y_seg, fig.cap="the cross-correlation function (ccf) between y and segment 7", out.width="80%", fig.keep="hold", fig.align='center'----
 ccrpeaks <- get_ccr_peaks(y, segments = segments, 50, nseg = 7, npeaks = 1)
-df.ccf <- data.frame(value = ccrpeaks$ccr$ccf, index = ccrpeaks$adj.pos)
+df.ccf <- data.frame(value = ccrpeaks$ccr$ccf, index = ccrpeaks$adj_pos)
 
 df.ccf %>% ggplot() +
   geom_line(aes(index, value)) + 
-  geom_vline(xintercept = ccrpeaks$peaks.pos, color = "red") +
+  geom_vline(xintercept = ccrpeaks$peaks_pos, color = "red") +
   xlab("position") +
   ylab("ccf") +
   ggtitle("CCF of y and the 7th Basis Segment")
@@ -110,13 +110,13 @@ seg_outlength <- 50
 
 ccf.df <- do.call(rbind, lapply(6:12, function(nss) {
   ccrpeaks <- get_ccr_peaks(comp, segments = segments, seg_outlength = seg_outlength, nseg = nss, npeaks = npeaks)
-  df.ccf <- data.frame(value = ccrpeaks$ccr$ccf, index = ccrpeaks$adj.pos)
+  df.ccf <- data.frame(value = ccrpeaks$ccr$ccf, index = ccrpeaks$adj_pos)
   df.ccf$segs <- nss
   df.ccf
 }))
 peak.df <- do.call(rbind, lapply(6:12, function(nss) {
   ccrpeaks <- get_ccr_peaks(comp, segments = segments, seg_outlength = seg_outlength, nseg = nss, npeaks = npeaks)
-  df.ccf <- data.frame(value = ccrpeaks$peaks.heights, index = ccrpeaks$peaks.pos)
+  df.ccf <- data.frame(value = ccrpeaks$peaks_heights, index = ccrpeaks$peaks_pos)
   df.ccf$segs <- nss
   df.ccf
 }))
@@ -140,13 +140,13 @@ seg_outlength <- 50
 
 ccf.df <- do.call(rbind, lapply(6:12, function(nss) {
   ccrpeaks <- get_ccr_peaks(comp, segments = segments, seg_outlength = seg_outlength, nseg = nss, npeaks = npeaks)
-  df.ccf <- data.frame(value = ccrpeaks$ccr$ccf, index = ccrpeaks$adj.pos)
+  df.ccf <- data.frame(value = ccrpeaks$ccr$ccf, index = ccrpeaks$adj_pos)
   df.ccf$segs <- nss
   df.ccf
 }))
 peak.df <- do.call(rbind, lapply(6:12, function(nss) {
   ccrpeaks <- get_ccr_peaks(comp, segments = segments, seg_outlength = seg_outlength, nseg = nss, npeaks = npeaks)
-  df.ccf <- data.frame(value = ccrpeaks$peaks.heights, index = ccrpeaks$peaks.pos)
+  df.ccf <- data.frame(value = ccrpeaks$peaks_heights, index = ccrpeaks$peaks_pos)
   df.ccf$segs <- nss
   df.ccf
 }))
@@ -166,7 +166,7 @@ ccf.df %>%
 ## ----plot_false_positive, fig.cap="Multi Segment Lengths Strategy - increasing the segment length could decrease the number of false positive peaks in ccf curves", out.width="80%", fig.keep="hold", fig.align='center'----
 comp <- y
 nseg <- 7
-npeaks.set <- c(5, 3, 1)
+npeaks_set <- c(5, 3, 1)
 
 multi.seg <- do.call(rbind, lapply(c(50, 100, 200), function(scale) {
   tt <- get_seg_scale(segments, nseg, out_length = scale)
@@ -190,15 +190,15 @@ out_length <- c(50, 100, 200)
 multi.df <- do.call(rbind, lapply(1:3, function(scale) {
   ccrpeaks <- get_ccr_peaks(comp, segments = segments,
                             seg_outlength = out_length[scale],
-                            nseg = nseg, npeaks = npeaks.set[scale])
-  df.tmp <- data.frame(value = ccrpeaks$ccr$ccf, index = ccrpeaks$adj.pos)
+                            nseg = nseg, npeaks = npeaks_set[scale])
+  df.tmp <- data.frame(value = ccrpeaks$ccr$ccf, index = ccrpeaks$adj_pos)
   df.tmp$scale <- paste("scale level", scale)
   df.tmp
 }))
 multi.peak.df <- do.call(rbind, lapply(1:3, function(scale) {
   ccrpeaks <- get_ccr_peaks(comp, segments = segments, seg_outlength = out_length[scale],
-                            nseg = nseg, npeaks = npeaks.set[scale])
-  df.tmp <- data.frame(value = ccrpeaks$peaks.heights, index = ccrpeaks$peaks.pos)
+                            nseg = nseg, npeaks = npeaks_set[scale])
+  df.tmp <- data.frame(value = ccrpeaks$peaks_heights, index = ccrpeaks$peaks_pos)
   df.tmp$scale <- paste("scale level", scale)
   df.tmp
 }))
@@ -218,27 +218,27 @@ p2
 
 ## ----plot_ccf_seg7, echo=TRUE-------------------------------------------------
 cmps <- extract_feature_cmps(x, y, include = "full_result")
-cmps.plot.list <- cmpsR::cmps_segment_plot(cmps, seg.idx = 7)
-ggpubr::ggarrange(plotlist = unlist(cmps.plot.list, recursive = FALSE),
+cmps_plot_list <- cmpsR::cmps_segment_plot(cmps, seg_idx = 7)
+ggpubr::ggarrange(plotlist = unlist(cmps_plot_list, recursive = FALSE),
                   nrow = 3, ncol = 2)
 
 ## ---- echo=TRUE, eval=TRUE----------------------------------------------------
 cmps <- extract_feature_cmps(x, y, seg_length = 50, Tx = 25, 
-                     npeaks.set = c(5, 3, 1), include = "full_result")
-cmps$CMPS.score
+                     npeaks_set = c(5, 3, 1), include = "full_result")
+cmps$CMPS_score
 
 ## ----plot_ccf_seg6, echo=TRUE, eval=TRUE--------------------------------------
-cmps.plot.list <- cmpsR::cmps_segment_plot(cmps, seg.idx = 6)
-ggpubr::ggarrange(plotlist = unlist(cmps.plot.list, recursive = FALSE),
+cmps_plot_list <- cmpsR::cmps_segment_plot(cmps, seg_idx = 6)
+ggpubr::ggarrange(plotlist = unlist(cmps_plot_list, recursive = FALSE),
                   nrow = 3, ncol = 2)
 
 ## ---- eval=TRUE, echo=TRUE----------------------------------------------------
 land23 <- bullets$sigs[bullets$bulletland == "2-3"][[1]]
 land13 <- bullets$sigs[bullets$bulletland == "1-3"][[1]]
 
-cmps.knm <- extract_feature_cmps(land23$sig, land13$sig, seg_length = 50, Tx = 25, 
-                     npeaks.set = c(5, 3, 1), include="full_result")
-cmps.knm$CMPS.score
+cmps_knm <- extract_feature_cmps(land23$sig, land13$sig, seg_length = 50, Tx = 25, 
+                     npeaks_set = c(5, 3, 1), include="full_result")
+cmps_knm$CMPS_score
 
 ## ----eval = TRUE, echo=TRUE---------------------------------------------------
 library(tidyverse)
@@ -265,7 +265,7 @@ comparisons <- comparisons %>% mutate(
 
 comparisons <- comparisons %>%
   mutate(
-    cmps_score = sapply(comparisons$cmps, function(x) x$CMPS.score),
+    cmps_score = sapply(comparisons$cmps, function(x) x$CMPS_score),
     cmps_nseg = sapply(comparisons$cmps, function(x) x$nseg)
   )
   

@@ -1,0 +1,14 @@
+citHeader("To cite package ‘cmpsR’ in publications use:")
+
+citEntry(entry  = "Manual",
+  title         = "cmpsR: R Implementation of Congruent Matching Profile Segments Method",
+  author        = "Wangqian Ju, Heike Hofmann",
+  year          = "2021",
+  note          = "R package version 0.1.2",
+  url           = "https://CRAN.R-project.org/package=cmpsR",
+  textVersion   = 
+  paste("Ju and Hofmann (2021).", 
+        "cmpsR: R Implementation of Congruent Matching Profile Segments Method.", 
+        "R package version 0.1.2.", 
+        "https://CRAN.R-project.org/package=cmpsR")
+)

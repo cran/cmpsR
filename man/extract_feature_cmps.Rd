@@ -9,7 +9,7 @@ extract_feature_cmps(
   y,
   seg_length = 50,
   Tx = 25,
-  npeaks.set = c(5, 3, 1),
+  npeaks_set = c(5, 3, 1),
   include = NULL,
   outlength = NULL
 )
@@ -23,17 +23,17 @@ extract_feature_cmps(
 
 \item{Tx}{a positive integer, the tolerance zone is \verb{+/- Tx}}
 
-\item{npeaks.set}{a numeric vector, specify the number of peaks to be found at each segment scale level
+\item{npeaks_set}{a numeric vector, specify the number of peaks to be found at each segment scale level
 \itemize{
-\item If \code{length(npeaks.set) == 1}, the algorithm uses multi-peak inspection only at the basis scale level;
-\item If \code{length(npeaks.set) > 1}, the algorithm uses multi-peak inspection at
+\item If \code{length(npeaks_set) == 1}, the algorithm uses multi-peak inspection only at the basis scale level;
+\item If \code{length(npeaks_set) > 1}, the algorithm uses multi-peak inspection at
 different segment scale levels.
-\item By default, \code{npeaks.set = c(5,3,1)}. Including more segment scale levels will reduce the number of false positive results
+\item By default, \code{npeaks_set = c(5,3,1)}. Including more segment scale levels will reduce the number of false positive results
 }}
 
 \item{include}{\code{NULL} or a vector of character strings indicating what additional information should be included in
-the output of \code{extract_feature_cmps}. All possible options are: "nseg", "congruent.pos", "congruent.seg",
-"congruent.seg.idx", "pos.df", "ccp.list","segments", and "parameters". If one wants to include them all, one can use
+the output of \code{extract_feature_cmps}. All possible options are: "nseg", "congruent_pos", "congruent_seg",
+"congruent_seg_idx", "pos_df", "ccp_list","segments", and "parameters". If one wants to include them all, one can use
 \code{include = "full_result"}. By default, \code{include = NULL} and only the CMPS score is returned}
 
 \item{outlength}{\code{NULL} or a numeric vector, specify the segment length of each level of the basis segment when the
@@ -47,10 +47,10 @@ a numeric value or a list
 \item if \verb{include = } one or a vector of strings listed above:
 \itemize{
 \item \code{nseg}: number of basis segments
-\item \code{congruent.seg}: a vector of boolean values. \code{TRUE} means this basis segment is a congruent matching profile segment (CMPS)
-\item \code{congruent.seg.idx}: the indices of all CMPS
-\item \code{pos.df}: a dataframe that includes positions of correlation peaks and the CMPS score of these positions
-\item \code{ccp.list}: a list of consistent correlation peaks of each basis segment.
+\item \code{congruent_seg}: a vector of boolean values. \code{TRUE} means this basis segment is a congruent matching profile segment (CMPS)
+\item \code{congruent_seg_idx}: the indices of all CMPS
+\item \code{pos_df}: a dataframe that includes positions of correlation peaks and the CMPS score of these positions
+\item \code{ccp_list}: a list of consistent correlation peaks of each basis segment.
 \item \code{segments}: a list of all basis segments
 \item \code{parameters}: a list that stores all parameters used in the function call
 }
@@ -61,7 +61,7 @@ Compute the Congruent Matching Profile Segments (CMPS) score based on two bullet
 The reference profile will be divided into consecutive, non-overlapping, basis segments of the same length.
 Then the number of segments that are congruent matching will be found as the CMPS score.
 By default, \code{extract_feature_cmps} implements the algorithm with multi-peak inspection at three
-different segment scale levels. By setting \code{npeaks.set} as a single-length vector, users can switch to the algorithm
+different segment scale levels. By setting \code{npeaks_set} as a single-length vector, users can switch to the algorithm
 with multi-peak inspection at the basis scale level only.
 }
 \examples{
@@ -79,7 +79,7 @@ cmps_with_multi_scale <- extract_feature_cmps(land2_3$sig, land1_2$sig, include 
 
 # algorithm with multi-peak inspection at the basis scale level only
 cmps_without_multi_scale <- extract_feature_cmps(land2_3$sig, land1_2$sig, 
-                                                 npeaks.set = 5, include = "full_result" )
+                                                 npeaks_set = 5, include = "full_result" )
 
 # Another example
 library(tidyverse)
@@ -105,7 +105,7 @@ comparisons <- comparisons \%>\% mutate(
 
 comparisons <- comparisons \%>\%
   mutate(
-    cmps_score = sapply(comparisons$cmps, function(x) x$CMPS.score),
+    cmps_score = sapply(comparisons$cmps, function(x) x$CMPS_score),
     cmps_nseg = sapply(comparisons$cmps, function(x) x$nseg)
   )
   

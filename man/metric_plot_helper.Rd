@@ -4,16 +4,26 @@
 \alias{metric_plot_helper}
 \title{Helper Function for Plotting the Distribution of a Metric}
 \usage{
-metric_plot_helper(cmps.metric, metric, scaled = FALSE, SSratio = TRUE, ...)
+metric_plot_helper(
+  cmps_metric,
+  metric,
+  scaled = FALSE,
+  SSratio = TRUE,
+  plot_density = TRUE,
+  ...
+)
 }
 \arguments{
-\item{cmps.metric}{a data frame containing values of the metric and the labels}
+\item{cmps_metric}{a data frame containing values of the metric and the labels}
 
 \item{metric}{string. Which metric to be plotted}
 
 \item{scaled}{logical value. If \code{scaled = TRUE}, the values should be within the interval of \verb{[0, 1]}}
 
 \item{SSratio}{logical value. Whether to show the sum of squares ratio value}
+
+\item{plot_density}{logical value. If \code{plot_density = TRUE}, the function plots
+group density on the y-axis; if \code{plot_density = FALSE}, it plots the count of a certain bin.}
 
 \item{...}{other arguments for plotting: \code{breaks}, \code{binwidth}, and \code{subtitle}}
 }

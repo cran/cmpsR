@@ -4,10 +4,10 @@
 \alias{compute_diff_phase}
 \title{Compute a Statistic for the Foreground Phase and the Background Phases}
 \usage{
-compute_diff_phase(scores.list, FUNC = mean, na.rm = TRUE, both = FALSE)
+compute_diff_phase(scores_list, FUNC = mean, na.rm = TRUE, both = FALSE)
 }
 \arguments{
-\item{scores.list}{a list of all phases}
+\item{scores_list}{a list of all phases}
 
 \item{FUNC}{a function to be applied to both the foreground phase and the background phases}
 
@@ -48,7 +48,7 @@ comparisons <- comparisons \%>\% mutate(
 
 comparisons <- comparisons \%>\%
   mutate(
-    cmps_score = sapply(comparisons$cmps, function(x) x$CMPS.score),
+    cmps_score = sapply(comparisons$cmps, function(x) x$CMPS_score),
     cmps_nseg = sapply(comparisons$cmps, function(x) x$nseg)
   )
   

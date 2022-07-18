@@ -76,7 +76,7 @@ compute_ss_ratio <- function(score, label, MS=FALSE) {
 #' 
 #' comparisons <- comparisons %>%
 #'   mutate(
-#'     cmps_score = sapply(comparisons$cmps, function(x) x$CMPS.score),
+#'     cmps_score = sapply(comparisons$cmps, function(x) x$CMPS_score),
 #'     cmps_nseg = sapply(comparisons$cmps, function(x) x$nseg)
 #'   )
 #'   
@@ -102,7 +102,7 @@ get_all_phases <- function(land1, land2, score, addNA = FALSE)
                   addNA = addNA)/xtabs(~land1 + land2, data = fullframe, 
                                        addNA = addNA)
   matrix <- cbind(matrix, matrix)
-  scores.list <- 1:maxland %>% lapply(FUN = function(i) {
+  scores_list <- 1:maxland %>% lapply(FUN = function(i) {
     if (i == 1) {
       diag(matrix)
     }
@@ -112,7 +112,7 @@ get_all_phases <- function(land1, land2, score, addNA = FALSE)
     }
   })
   
-  return(scores.list)
+  return(scores_list)
 }
 
 
@@ -121,7 +121,7 @@ get_all_phases <- function(land1, land2, score, addNA = FALSE)
 #' Compute a statistic (for example, a mean) based on all matching comparisons (foreground phase) and the same statistic
 #' based on all non-matching comparisons (background phases)
 #'
-#' @param scores.list a list of all phases
+#' @param scores_list a list of all phases
 #' @param FUNC a function to be applied to both the foreground phase and the background phases
 #' @param na.rm a logical value indicating whether NA values should be stripped before the computation proceeds
 #' @param both logical value. If `TRUE`, return the values of the `FUNC` for both the foreground phase and the background phases;
@@ -155,7 +155,7 @@ get_all_phases <- function(land1, land2, score, addNA = FALSE)
 #' 
 #' comparisons <- comparisons %>%
 #'   mutate(
-#'     cmps_score = sapply(comparisons$cmps, function(x) x$CMPS.score),
+#'     cmps_score = sapply(comparisons$cmps, function(x) x$CMPS_score),
 #'     cmps_nseg = sapply(comparisons$cmps, function(x) x$nseg)
 #'   )
 #'   
@@ -170,12 +170,12 @@ get_all_phases <- function(land1, land2, score, addNA = FALSE)
 #' })
 #' 
 #' compute_diff_phase(phases)
-compute_diff_phase <- function(scores.list, FUNC = mean, na.rm = TRUE, both = FALSE)
+compute_diff_phase <- function(scores_list, FUNC = mean, na.rm = TRUE, both = FALSE)
 {
-  scores <- sapply(scores.list, FUNC, na.rm=na.rm)
+  scores <- sapply(scores_list, FUNC, na.rm=na.rm)
   max.phase <- which.max(scores)
   result.match <- max(scores, na.rm=na.rm)
-  result.nmatch <- scores.list[-max.phase] %>% unlist() %>% FUNC(na.rm=na.rm)
+  result.nmatch <- scores_list[-max.phase] %>% unlist() %>% FUNC(na.rm=na.rm)
   if(both) {
     return(c(result.match, result.nmatch))
   } else {
@@ -230,7 +230,7 @@ compute_diff_phase <- function(scores.list, FUNC = mean, na.rm = TRUE, both = FA
 #' 
 #' comparisons <- comparisons %>%
 #'   mutate(
-#'     cmps_score = sapply(comparisons$cmps, function(x) x$CMPS.score),
+#'     cmps_score = sapply(comparisons$cmps, function(x) x$CMPS_score),
 #'     cmps_nseg = sapply(comparisons$cmps, function(x) x$nseg)
 #'   )
 #'   
@@ -250,12 +250,12 @@ compute_score_metrics <- function(land1, land2, score,
     is.numeric(land1), is.numeric(land2), is.numeric(score)
   )
   
-  scores.list <- get_all_phases(land1, land2, score, addNA = addNA)
-  tmp.diff <- compute_diff_phase(scores.list, mean, na.rm, both = TRUE)
+  scores_list <- get_all_phases(land1, land2, score, addNA = addNA)
+  tmp.diff <- compute_diff_phase(scores_list, mean, na.rm, both = TRUE)
   
   result <- data.frame(
     diff = tmp.diff[1] - tmp.diff[2],
-    diff.med = compute_diff_phase(scores.list, median, na.rm = na.rm),
+    diff.med = compute_diff_phase(scores_list, median, na.rm = na.rm),
     max = max(score, na.rm = na.rm),
     maxbar = tmp.diff[1]
   )
@@ -285,16 +285,25 @@ compute_score_metrics <- function(land1, land2, score,
 
 #' Helper Function for Plotting the Distribution of a Metric
 #'
-#' @param cmps.metric a data frame containing values of the metric and the labels
+#' @param cmps_metric a data frame containing values of the metric and the labels
 #' @param metric string. Which metric to be plotted
 #' @param scaled logical value. If `scaled = TRUE`, the values should be within the interval of `[0, 1]`
 #' @param SSratio logical value. Whether to show the sum of squares ratio value
+#' @param plot_density logical value. If `plot_density = TRUE`, the function plots
+#' group density on the y-axis; if `plot_density = FALSE`, it plots the count of a certain bin.
 #' @param ... other arguments for plotting: `breaks`, `binwidth`, and `subtitle`
 #'
 #' @return a ggplot object
+#' @import assertthat 
 #' @export
-metric_plot_helper <- function(cmps.metric, metric, scaled = FALSE, SSratio = TRUE, ...) {
-  # scaled <- str_detect(metric, "_scaled")
+metric_plot_helper <- function(
+  cmps_metric, metric, scaled = FALSE, SSratio = TRUE, plot_density = TRUE,
+  ...
+  ) {
+  assert_that(
+    has_name(cmps_metric, "type_truth")
+  )  
+  
   dots <- list(...)
   if(scaled) {
     if(is.null(dots$breaks)) {
@@ -315,11 +324,14 @@ metric_plot_helper <- function(cmps.metric, metric, scaled = FALSE, SSratio = TR
     }
   }
   
-  p <- cmps.metric %>% ggplot() +
-    geom_histogram(aes(x = .data[[metric]],
-                       fill = as.factor(.data$type_truth)), binwidth = dots$binwidth) +
+  p <- cmps_metric %>% ggplot() +
+    geom_histogram(aes(
+      x = .data[[metric]], y = if (plot_density) .data$..density.. else .data$..count..,
+      fill = as.factor(.data$type_truth)), 
+      binwidth = dots$binwidth) +
     labs(
       x = metric,
+      y = if (plot_density) "observed proportion by group" else "count",
       fill = "Comparison Type",
       subtitle = dots$subtitle
     ) +
@@ -328,7 +340,7 @@ metric_plot_helper <- function(cmps.metric, metric, scaled = FALSE, SSratio = TR
     theme(panel.grid.minor = element_blank()) +
     scale_fill_manual(values=c("darkorange", "darkgrey"))
   
-  ss.ratio <- compute_ss_ratio(cmps.metric[[metric]], cmps.metric$type_truth, MS = FALSE)
+  ss.ratio <- compute_ss_ratio(cmps_metric[[metric]], cmps_metric$type_truth, MS = FALSE)
   if(SSratio) {
     p <- p + 
       annotate(geom = "label", x = Inf, y = Inf, 

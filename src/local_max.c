@@ -33,6 +33,7 @@ SEXP LOCAL_MAX_(SEXP seq_in, SEXP MAX_MIN_in)
 
         if (len == 1)
         {
+                UNPROTECT(protect_cnt);
                 return (ScalarReal(seq[0]));
         }
         else if (len < 1)

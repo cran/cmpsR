@@ -21,9 +21,9 @@ get_ccr_peaks(comp, segments, seg_outlength, nseg = 1, npeaks = 5)
 a list consisting of:
 \itemize{
 \item \code{ccr}: the cross correlation curve
-\item \code{adj.pos}: indices of the curve
-\item \code{peaks.pos}: position of the identified peaks
-\item \code{peaks.heights}: the cross correlation value (height of the curve) of the peaks
+\item \code{adj_pos}: indices of the curve
+\item \code{peaks_pos}: position of the identified peaks
+\item \code{peaks_heights}: the cross correlation value (height of the curve) of the peaks
 }
 }
 \description{

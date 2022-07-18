@@ -45,7 +45,7 @@ comparisons <- comparisons \%>\% mutate(
 
 comparisons <- comparisons \%>\%
   mutate(
-    cmps_score = sapply(comparisons$cmps, function(x) x$CMPS.score),
+    cmps_score = sapply(comparisons$cmps, function(x) x$CMPS_score),
     cmps_nseg = sapply(comparisons$cmps, function(x) x$nseg)
   )
   

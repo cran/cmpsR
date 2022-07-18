@@ -16,7 +16,6 @@
 #' x <- land2_3$sig
 #' 
 #' segments <- get_segs(x, len = 50)
- 
 get_segs <- function(x, len = 50){
   
   assert_that(is.numeric(x), is.numeric(len))
@@ -27,8 +26,6 @@ get_segs <- function(x, len = 50){
   x.na.count <- .Call(na_trim_c, x)
   xx <- x[(x.na.count[1] + 1) : (length(x) - x.na.count[2])]
   idx <- idx[(x.na.count[1] + 1) : (length(x) - x.na.count[2])]
-  # xx <- na.trim(x)
-  # idx <- na.trim(idx)
   
   assert_that(!is.na(idx[1]), !is.na(idx[length(idx)]))
   

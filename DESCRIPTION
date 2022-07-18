@@ -1,6 +1,6 @@
 Package: cmpsR
 Title: R Implementation of Congruent Matching Profile Segments Method
-Version: 0.1.0
+Version: 0.1.2
 Authors@R: c(
     person("Wangqian", "Ju", email = "wju@iastate.edu", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-9977-377X")),
     person("Heike", "Hofmann", email = "hofmann@iastate.edu", role = "ctb", comment=c(ORCID="0000-0001-6216-5183"))
@@ -17,13 +17,13 @@ Suggests: purrr, tidyverse, ggpubr, knitr, rmarkdown
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Depends: R (>= 3.5.0)
 VignetteBuilder: knitr
 NeedsCompilation: yes
-Packaged: 2021-10-28 05:30:20 UTC; willju
+Packaged: 2022-07-18 04:13:12 UTC; willju
 Author: Wangqian Ju [aut, cre] (<https://orcid.org/0000-0002-9977-377X>),
   Heike Hofmann [ctb] (<https://orcid.org/0000-0001-6216-5183>)
 Maintainer: Wangqian Ju <wju@iastate.edu>
 Repository: CRAN
-Date/Publication: 2021-10-29 08:50:09 UTC
+Date/Publication: 2022-07-18 08:20:05 UTC

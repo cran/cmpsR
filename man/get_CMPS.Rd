@@ -4,19 +4,22 @@
 \alias{get_CMPS}
 \title{Compute the CMPS score}
 \usage{
-get_CMPS(input.ccp, Tx = 25)
+get_CMPS(input_ccp, Tx = 25)
 }
 \arguments{
-\item{input.ccp}{a list of positions for (consistent) correlation peaks}
+\item{input_ccp}{a list of positions for (consistent) correlation peaks}
 
 \item{Tx}{integer, the tolerance zone is \verb{+/- Tx}}
 }
 \value{
-a list of three components:
+a list of six components:
 \itemize{
-\item \code{CMPS.score}: computed CMPS score
-\item \code{rec.position}: the recommended position that results in the CMPS score
-\item \code{pos.df}: a dataframe that includes all positions and their corresponding CMPS score
+\item \code{CMPS_score}: computed CMPS score
+\item \code{nseg}: the number of basis segments
+\item \code{congruent_pos}: the congruent position that results in the CMPS score
+\item \code{congruent_seg}: a boolean vector of the congruent matching profile segments
+\item \code{congruent_seg_idx}: the index of the congruent matching profile segments
+\item \code{pos_df}: a dataframe that includes all positions and their corresponding CMPS score
 }
 }
 \description{
@@ -31,16 +34,16 @@ y <- land1_2$sig
 segments <- get_segs(x, len = 50)
 nseg <- length(segments$segs)
 seg_scale_max <- 3
-npeaks.set <- c(5,3,1)
+npeaks_set <- c(5,3,1)
 outlength <- c(50, 100, 200)
 
-ccp.list <- lapply(1:nseg, function(nseg) {
- ccr.list <- lapply(1:seg_scale_max, function(seg_scale) {
+ccp_list <- lapply(1:nseg, function(nseg) {
+ ccr_list <- lapply(1:seg_scale_max, function(seg_scale) {
    get_ccr_peaks(y, segments, seg_outlength = outlength[seg_scale], 
-   nseg = nseg, npeaks = npeaks.set[seg_scale])
+   nseg = nseg, npeaks = npeaks_set[seg_scale])
  })
 
- get_ccp(ccr.list, Tx = 25)
+ get_ccp(ccr_list, Tx = 25)
 })
-cmps <- get_CMPS(ccp.list, Tx = 25)
+cmps <- get_CMPS(ccp_list, Tx = 25)
 }
